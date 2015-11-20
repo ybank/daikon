@@ -276,6 +276,7 @@ summary: diffs
 	@for file in $(DIFF_FILES); do \
 	  if [ -s $$file ]; then \
 	    echo "FAILED  $$file"; \
+		cat $$file \
 	  else \
 	    echo "OK      $$file"; \
 	  fi; \
@@ -286,6 +287,7 @@ summary-w-daikon: diffs-w-daikon
 	@for file in $(DIFF_FILES) $(INV_DIFFS); do \
 	  if [ -s $$file ]; then \
 	    echo "FAILED  $$file"; \
+		cat $$file \
 	  else \
 	    echo "OK      $$file"; \
 	  fi; \
