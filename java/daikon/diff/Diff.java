@@ -680,7 +680,9 @@ public final class Diff {
       } else if (ppt.ppt_name.isEnterPoint()) {
         return true;
       } else if (ppt.ppt_name.isCombinedExitPoint()) {
-        return true;
+          return true;
+      } else if (ppt.ppt_name.isCombinedThrowPoint()) {
+          return true;
       } else {
         return false;
       }

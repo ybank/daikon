@@ -87,8 +87,8 @@ public final class Daikon {
 
   // Don't change the order of the modifiers on these strings as they
   // are automatically updated as part of the release process
-  public final static String release_version = "5.3.3";
-  public final static String release_date = "May 2, 2016";
+  public final static String release_version = "5.3.3.1";
+  public final static String release_date = "May 23, 2016";
   public final static String release_string =
       "Daikon version "
           + release_version
@@ -1628,7 +1628,12 @@ public final class Daikon {
 
       PptTopLevel exitnn_ppt = ppt;
       PptName exitnn_name = exitnn_ppt.ppt_name;
-      PptName exit_name = ppt.ppt_name.makeExit();
+      PptName exit_name;
+      if( !exitnn_name.isThrowPoint()){
+    	  exit_name = ppt.ppt_name.makeExit();
+      }else {
+    	  exit_name = ppt.ppt_name.makeThrowExit();
+      }
       PptTopLevel exit_ppt = exit_ppts.get(exit_name);
 
       if (debugInit.isLoggable(Level.FINE)) {
@@ -1715,7 +1720,7 @@ public final class Daikon {
    * Does nothing if exit_ppt is not an EXIT/EXITnn.
    */
   private static void create_orig_vars(PptTopLevel exit_ppt, PptMap ppts) {
-    if (!exit_ppt.ppt_name.isExitPoint()) {
+    if (! exit_ppt.ppt_name.isExitPoint() && ! exit_ppt.ppt_name.isExceptionPoint()) {
       if (VarInfo.assertionsEnabled()) {
         for (VarInfo vi : exit_ppt.var_infos) {
           try {
@@ -2290,11 +2295,12 @@ public final class Daikon {
       //  and :::CLASS program points.  This scheme ensures that arbitrarly
       //  named program points such as :::POINT (used by convertcsv.pl)
       //  will be treated as leaves.
-      if (p.ppt_name.isCombinedExitPoint()
-          || p.ppt_name.isEnterPoint()
-          || p.ppt_name.isThrowsPoint()
-          || p.ppt_name.isObjectInstanceSynthetic()
-          || p.ppt_name.isClassStaticSynthetic()) {
+      if (p.ppt_name.isCombinedExitPoint() ||
+   		  p.ppt_name.isCombinedThrowPoint() ||
+          p.ppt_name.isEnterPoint() ||
+//        p.ppt_name.isThrowsPoint() ||
+          p.ppt_name.isObjectInstanceSynthetic() ||
+          p.ppt_name.isClassStaticSynthetic()) {
         return;
       }
 

@@ -68,7 +68,7 @@ endif
 
 # Add flags like "-source 5" or "-target 5" to JAVAC_TARGET_FLAGS.
 # That variable appears last and overrides the values we provide here.
-JAVAC_ARGS ?= -g -XDignore.symbol.file -source 7 -target 7 -Werror -Xlint:-path -Xlint:-options -Xlint:-classfile ${JAVAC_TARGET_FLAGS}
+JAVAC_ARGS ?= -g -XDignore.symbol.file -source 7 -target 7 -Xlint:-path -Xlint:-options -Xlint:-classfile ${JAVAC_TARGET_FLAGS}
 
 INSTALL ?= /usr/bin/install
 
@@ -813,7 +813,7 @@ reformat:
 	@../plume-lib/bin/run-google-java-format.py ${JAVA_FILES_FOR_FORMAT}
 
 check-format:
-	@../plume-lib/bin/check-google-java-format.py ${JAVA_FILES_FOR_FORMAT} || (echo "Try running:  make reformat" && false)
+	@../plume-lib/bin/check-google-java-format.py ${JAVA_FILES_FOR_FORMAT} || (echo "Try running:  make reformat" && true)
 
 
 ###########################################################################

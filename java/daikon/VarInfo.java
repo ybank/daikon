@@ -3251,40 +3251,52 @@ public final /*@Interned*/ class VarInfo implements Cloneable, Serializable {
 
     // Build the name by processing back through all of the enclosing variables
     switch (var_kind) {
-      case FIELD:
-        assert relative_name != null : this;
-        if (enclosing_var != null) {
-          return enclosing_var.jml_name(index) + "." + relative_name;
-        }
-        return str_name;
-      case FUNCTION:
-        //function_args      assert function_args == null : "function args not implemented";
-        if (var_flags.contains(VarFlags.CLASSNAME)) {
-          if (arr_dims > 0) {
-            return String.format("daikon.Quant.typeArray(%s)", enclosing_var.jml_name(index));
-          } else {
-            return enclosing_var.jml_name(index) + DaikonVariableInfo.class_suffix;
-          }
-        }
-        if (var_flags.contains(VarFlags.TO_STRING)) {
-          return enclosing_var.jml_name(index) + ".toString()";
-        }
-        if (enclosing_var != null) {
-          return enclosing_var.jml_name(index) + "." + relative_name + "()";
-        }
-        return str_name;
-      case ARRAY:
-        if (index == null) {
-          return enclosing_var.jml_name(null);
-        }
-        return enclosing_var.jml_name(null) + "[" + index + "]";
-      case VARIABLE:
-        assert enclosing_var == null;
-        return str_name;
-      case RETURN:
-        return "\\result";
-      default:
-        throw new Error("can't drop through switch statement");
+    case FIELD:
+    	assert relative_name != null : this;
+    	if (enclosing_var != null) {
+    		return enclosing_var.jml_name(index) + "." + relative_name;
+    	}
+    	return str_name;
+    case FUNCTION:
+    	//function_args      assert function_args == null : "function args not implemented";
+    	if (var_flags.contains (VarFlags.CLASSNAME)) {
+    		if (arr_dims > 0)
+    			return String.format ("daikon.Quant.typeArray(%s)",
+    					enclosing_var.jml_name(index));
+    		else
+    			return enclosing_var.jml_name(index) + DaikonVariableInfo.class_suffix;
+    	}
+    	if (var_flags.contains (VarFlags.TO_STRING))
+    		return enclosing_var.jml_name(index) + ".toString()";
+    	if (enclosing_var != null){
+    		StringBuilder formalPara = new StringBuilder();
+    		if(!function_args.isEmpty()){
+    			String prefix = "";
+    			for (VarInfo fargs : function_args) {
+    				if(fargs.equals(enclosing_var))
+    					continue;
+    				formalPara.append(prefix);
+    				prefix = ",";
+    				formalPara.append(fargs.jml_name());
+    			}
+    		}
+    		return enclosing_var.jml_name(index) + "." + relative_name + "("+formalPara.toString()+")";
+    	}
+    	return str_name;
+    case ARRAY:
+    	if (index == null)
+    		return enclosing_var.jml_name(null);
+    	return enclosing_var.jml_name(null) + "[" + index + "]";
+    case VARIABLE:
+    	assert enclosing_var == null;
+    	return str_name;
+    case RETURN:
+    	if(!name().contains("exception"))
+    		return ("\\result");
+    	else
+    		return ("Exception");
+    default:
+    	throw new Error("can't drop through switch statement");
     }
   }
 
